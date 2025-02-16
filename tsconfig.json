@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "types": ["vite-plugin-svgr/client"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  },
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
