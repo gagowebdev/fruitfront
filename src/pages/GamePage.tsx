@@ -52,8 +52,8 @@ function GamePage() {
 
   useEffect(() => {
     if (!socketRef.current) {
-      // socketRef.current = io('https://fruitqwest.onrender.com', {
-      socketRef.current = io('http://localhost:3000', {
+      socketRef.current = io('https://fruitqwest.onrender.com', {
+      // socketRef.current = io('http://localhost:3000', {
         auth: { userId: localStorage.getItem('userId') },
       });
 
