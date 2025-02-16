@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import ProgressBar from '../components/ProgressBar';
 import 'react-toastify/dist/ReactToastify.css';
 import GameCoinIcon from '../assets/icons/gamecoin.svg';
+import useAuth from '../hooks/useAuth';
 
 type StoreItem = {
   id: number;
@@ -28,6 +29,7 @@ const skins = [
 ];
 
 function GamePage() {
+  useAuth();
   const [gameBalance, setGameBalance] = useState(0);
   const [level, setLevel] = useState(1);
   const [clicks, setClicks] = useState(0);

@@ -31,7 +31,7 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
         <h1>Смена пароля</h1>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {message && <p style={{ color: 'green' }}>{message}</p>}
-        <form onSubmit={handleChangePassword}>
+        <form className='form' onSubmit={handleChangePassword}>
           <div>
             <label>Старый пароль:</label>
             <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} required />
@@ -40,7 +40,7 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
             <label>Новый пароль:</label>
             <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
           </div>
-          <button type="submit" style={{ marginBottom: '0px' }}>Сменить</button>
+          <button className='button' type="submit" style={{ marginBottom: '0px' }}>Сменить</button>
           <button type="button" onClick={onClose}>Отмена</button>
         </form>
       </div>

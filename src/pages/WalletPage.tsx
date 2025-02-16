@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api/axiosInstance"; // ✅ Используем общий `axiosInstance`
 import { toast } from "react-toastify";
+import useAuth from '../hooks/useAuth';
 
 function WalletPage() {
+  useAuth();
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [showDepositForm, setShowDepositForm] = useState(false);
@@ -29,7 +31,10 @@ function WalletPage() {
     api.get("/transactions/history")
       .then((response) => {
         if (Array.isArray(response.data)) {
-          setTransactions(response.data);
+          const filteredTransactions = response.data.filter(
+            (tx) => tx.type === "deposit" || tx.type === "withdraw"
+          );
+          setTransactions(filteredTransactions);
         } else {
           setTransactions([]);
         }
@@ -125,115 +130,144 @@ function WalletPage() {
 
   return (
     <div className="wallet">
-      <h2>Кошелек</h2>
-
-      <div className="wallet-balance">
-        <h3>Баланс: {balance} AMD</h3>
-      </div>
-
-      <div className="wallet-actions">
-        <button 
-          onClick={() => setShowDepositForm(true)} 
-          disabled={activeDeposit !== null}
-        >
-          Пополнить
-        </button>
-        <button onClick={() => setShowWithdrawForm(true)} disabled={balance < 100}>
-        Вывести
-      </button>
+      <div className='referralActive__inner'>
+        <div className="referralActive__info">
+          <p>Баланс: {balance} AMD</p>
+          <div className="wallet-actions">
+            <button
+              className="btn-green" 
+              onClick={() => setShowDepositForm(true)} 
+              disabled={activeDeposit !== null}
+            >
+              Пополнить
+            </button>
+            <button className="btn-warning" onClick={() => setShowWithdrawForm(true)} disabled={balance < 100}>
+            Вывести
+            </button>
+          </div>
+        </div>
       </div>
 
 
       {showDepositForm && (
-        <div className="modal">
-          <h3>Пополнение</h3>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            placeholder="Введите сумму"
-          />
-          <button onClick={handleDeposit}>Отправить</button>
-          <button onClick={() => setShowDepositForm(false)}>Отмена</button>
+        <div className="modal login">
+          <div className="modal-content">
+            <h1>Пополнение</h1>
+            <div className="form">
+              <div>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  placeholder="Введите сумму"
+                />
+              </div>
+              <button className="button mb0" onClick={handleDeposit}>Отправить</button>
+              <button className="btn-danger" onClick={() => setShowDepositForm(false)}>Отмена</button>
+            </div>
+          </div>
         </div>
       )}
 
       {showWithdrawForm && (
-        <div className="modal">
-          <h3>Вывод</h3>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            placeholder="Введите сумму"
-          />
-          <input
-            type="text"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
-            placeholder="Введите номер карты"
-          />
-          <button onClick={handleWithdraw}>Отправить</button>
-          <button onClick={() => {
-            setAmount(0);
-            setCardNumber("");
-            setShowWithdrawForm(false);
-          }}>
-            Отмена
-          </button>
+        <div className="modal login">
+          <div className="modal-content">
+          <h1>Вывод</h1>
+          <div className="form">
+          <div>
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+                placeholder="Введите сумму"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder="Введите номер карты"
+              />
+            </div>
+            <button className="button mb0"  onClick={handleWithdraw}>Отправить</button>
+            <button className="btn-danger" onClick={() => {
+              setAmount(0);
+              setCardNumber("");
+              setShowWithdrawForm(false);
+            }}>
+              Отмена
+            </button>
+          </div>
+          </div>
         </div>
       )}
 
       {activeDeposit && (
         <div className="deposit-status">
-          <p>Вы начали пополнение. Подтвердите оплату:</p>
-          <button onClick={() => {
-            api.patch(`/admin/transactions/${activeDeposit}/confirm`)
-              .then(() => {
-                toast.success("Пополнение отправлено на проверку");
-                localStorage.removeItem("activeDeposit");
-                setActiveDeposit(null);
-              })
-              .catch(() => toast.error("Ошибка подтверждения"));
-          }}>Я оплатил</button>
+          <div className="deposit-status__inner">
+            <p>Вы начали пополнение. Подтвердите оплату:</p>
+            <div className="deposit-status__btns">
+              <button className="btn-success" onClick={() => {
+                api.patch(`/transactions/${activeDeposit}/confirm`)
+                  .then(() => {
+                    toast.success("Пополнение отправлено на проверку");
+                    localStorage.removeItem("activeDeposit");
+                    setActiveDeposit(null);
+                  })
+                  .catch(() => toast.error("Ошибка подтверждения"));
+              }}>Я оплатил</button>
 
-          <button onClick={() => {
-            api.delete(`/transactions/${activeDeposit}/cancel`)
-              .then(() => {
-                toast.info("Пополнение отменено");
-                localStorage.removeItem("activeDeposit");
-                setActiveDeposit(null);
-              })
-              .catch(() => toast.error("Ошибка при отмене"));
-          }}>Отмена</button>
+              <button className="btn-danger" onClick={() => {
+                api.delete(`/transactions/${activeDeposit}/cancel`)
+                  .then(() => {
+                    toast.info("Пополнение отменено");
+                    localStorage.removeItem("activeDeposit");
+                    setActiveDeposit(null);
+                  })
+                  .catch(() => toast.error("Ошибка при отмене"));
+              }}>Отмена</button>
+            </div>
+          </div>
         </div>
       )}
 
+      
       <div className="wallet-history">
         <h3>История транзакций</h3>
         {transactions.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Сумма</th>
-                <th>Тип</th>
-                <th>Дата</th>
-                <th>Статус</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx.id}>
-                  <td>{tx.amount} AMD</td>
-                  <td>{tx.type === "deposit" ? "Пополнение" : "Вывод"}</td>
-                  <td>{formatDateToLocal(tx.created_at)}</td>
-                  <td>{tx.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="wallet-history__table">
+            <div className="tbl-header">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Сумма</th>
+                    <th>Тип</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className="tbl-content">
+              <table>
+                <tbody>
+                  {transactions
+                  .filter((tx) => tx.type === "deposit" || tx.type === "withdraw")
+                  .map((tx) => (
+                    <tr key={tx.id}>
+                      <td>{tx.amount} AMD</td>
+                      <td>{tx.type === "deposit" ? "Пополнение" : "Вывод"}</td>
+                      <td>{formatDateToLocal(tx.created_at)}</td>
+                      <td>{tx.status === "pending" ? "В обработке" : ""}{tx.status === "approved" ? "Одобрено" : ""}{tx.status === "rejected" ? "Отказано" : ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
-          <p>Транзакций пока нет</p>
+          <p className='no-referral-text'>Транзакций пока нет</p>
         )}
       </div>
     </div>

@@ -38,7 +38,7 @@ function RegisterPage() {
       <h2>Регистрация</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
-      <form onSubmit={handleRegister}>
+      <form className='form' onSubmit={handleRegister}>
         <div>
           <label>Логин:</label>
           <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} required />
@@ -51,7 +51,7 @@ function RegisterPage() {
           <label>ID рефера:</label>
           <input type="number" value={referrerId} onChange={(e) => setReferrerId(e.target.value ? Number(e.target.value) : '')} />
         </div>
-        <button type="submit">Зарегистрироваться</button>
+        <button className='button' type="submit">Зарегистрироваться</button>
       </form>
       <p>Уже есть аккаунт? <Link to="/login">Войти</Link></p>
     </div>

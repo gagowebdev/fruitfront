@@ -31,7 +31,7 @@ function LoginPage() {
     <div className="login">
       <h1>Вход</h1>
       {error && <p className='login__error'>{error}</p>}
-      <form onSubmit={handleLogin}>
+      <form className='form' onSubmit={handleLogin}>
         <div>
           <label>Логин:</label>
           <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} required />
@@ -40,7 +40,7 @@ function LoginPage() {
           <label>Пароль:</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
-        <button type="submit">Войти</button>
+        <button className='button' type="submit">Войти</button>
       </form>
       <p>Еще нету аккаунта? <Link to="/register">Регистрация</Link></p>
     </div>

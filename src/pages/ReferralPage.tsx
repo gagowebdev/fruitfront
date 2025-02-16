@@ -103,7 +103,7 @@ function ReferralPage() {
             <p><img src={PackageIcon} alt="" />Ваш пакет: {user.package.name}</p>
             <p><img src={LimitIcon} alt="" />Лимит дохода: {formatNumber(user.referralLimit.remaining)} AMD</p>
             <p><img src={EarningIcon} alt="" />Заработано: {formatNumber(user.referralLimit.used)} AMD</p>
-            <button onClick={copyToClipboard}>
+            <button className='btn-success' onClick={copyToClipboard}>
             <img src={CopyIcon} alt="" /> Код приглашения
             </button>
           </div>
@@ -118,7 +118,7 @@ function ReferralPage() {
                 ))}
               </ul>
             ) : (
-              <p>У вас пока нет рефералов</p>
+              <p className='no-referral-text'>У вас пока нет рефералов</p>
             )}
           </div>
         </div>
